@@ -5,7 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Float, Sparkles } from "@react-three/drei";
 import * as THREE from "three";
 
-function useGearGeometry({ teeth = 18, outer = 1.5, inner = 0.55, depth = 0.4 }) {
+function useGearGeometry({ teeth = 18, outer = 1.5, inner = 0.55, depth = 0.5 }) {
   return useMemo(() => {
     const shape = new THREE.Shape();
     const toothDepth = outer * 0.16;
