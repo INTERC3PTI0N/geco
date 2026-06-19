@@ -33,43 +33,19 @@ export default function AchievementsPage() {
         body="More than six decades of uninterrupted innovation, recognised by industry and the Government of India alike."
       />
 
-      {/* Trophy / 60 / quality showcase */}
+      {/* 60 years showcase */}
       <section className="section-pad py-10 lg:py-16">
-        <div className="maxw grid items-center gap-8 lg:grid-cols-4">
-          <Reveal className="card flex flex-col items-center p-8 text-center">
+        <div className="maxw flex justify-center">
+          <Reveal className="flex flex-col items-center text-center">
             <Gallery
-              images={[{ src: "/brand/trophy.webp", alt: "Gold Trophy" }]}
-              className="inline-block"
-              itemClassName="h-36 w-auto"
-              imgClassName="object-contain"
+              images={[{ src: "/brand/60-years.webp", alt: "Celebrating 60+ years of innovation" }]}
+              className="inline-block w-full max-w-sm"
+              itemClassName="w-full"
+              imgClassName="h-auto w-full object-contain"
             />
-            <h3 className="font-display mt-5 text-lg font-semibold text-ink">Gold Trophy</h3>
-            <p className="mt-2 text-sm text-muted">Largest exporter — five years in a row.</p>
-          </Reveal>
-
-          <Reveal delay={0.08} className="order-first lg:order-none lg:col-span-2">
-            <div className="flex flex-col items-center text-center">
-              <Gallery
-                images={[{ src: "/brand/60-years.webp", alt: "Celebrating 60+ years of innovation" }]}
-                className="inline-block w-full max-w-sm"
-                itemClassName="w-full"
-                imgClassName="h-auto w-full object-contain"
-              />
-              <p className="mt-6 max-w-md text-ink-2">
-                A legacy of innovation, manufacturing and global trust — built part by part, year after year.
-              </p>
-            </div>
-          </Reveal>
-
-          <Reveal delay={0.12} className="card flex flex-col items-center p-8 text-center">
-            <Gallery
-              images={[{ src: "/brand/quality.webp", alt: "World Class Quality" }]}
-              className="inline-block"
-              itemClassName="h-36 w-auto"
-              imgClassName="object-contain"
-            />
-            <h3 className="font-display mt-5 text-lg font-semibold text-ink">World Class Quality</h3>
-            <p className="mt-2 text-sm text-muted">ISO 9001:2015 certified manufacturing.</p>
+            <p className="mt-6 max-w-md text-ink-2">
+              A legacy of innovation, manufacturing and global trust — built part by part, year after year.
+            </p>
           </Reveal>
         </div>
       </section>
