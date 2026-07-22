@@ -72,6 +72,7 @@ export default function Footer() {
       <div className="border-t border-line">
         <div className="section-pad maxw flex flex-col items-center justify-between gap-3 py-6 text-xs text-muted sm:flex-row">
           <span>© {new Date().getFullYear()} {COMPANY.legal}. All rights reserved.</span>
+          <span>Powered By <a href="https://techlinque.com/">TLQ</a></span>
           <span>Aftermarket Engine Parts in Original Quality · Since {COMPANY.since}</span>
         </div>
       </div>
