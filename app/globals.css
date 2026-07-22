@@ -46,6 +46,7 @@
   --color-line: var(--line);
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
 * { box-sizing: border-box; }
@@ -74,7 +75,16 @@ html.lenis, html.lenis body { height: auto; }
 ::-webkit-scrollbar-thumb { background: linear-gradient(var(--blue), var(--blue-deep)); border-radius: 99px; border: 2px solid var(--bg-2); }
 
 /* ============ Utilities ============ */
-.font-display { font-family: var(--font-display), sans-serif; }
+.font-display { font-family: var(--font-display), sans-serif; letter-spacing: -0.015em; }
+.font-mono { font-family: var(--font-mono), ui-monospace, monospace; }
+
+/* Section label — clean tracked sans, professional/corporate */
+.tech-label {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--blue); font-weight: 600;
+}
+.tech-label-gold { color: var(--gold-deep); }
 
 .text-gradient-blue {
   background: linear-gradient(100deg, var(--blue), var(--blue-deep));
@@ -88,7 +98,8 @@ html.lenis, html.lenis body { height: auto; }
 .maxw { max-width: 1400px; margin-inline: auto; }
 
 .eyebrow {
-  font-size: 0.72rem; letter-spacing: 0.28em; text-transform: uppercase;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--blue); font-weight: 600;
 }
 .eyebrow-gold { color: var(--gold-deep); }
@@ -146,12 +157,67 @@ html.lenis, html.lenis body { height: auto; }
 
 .hairline { height: 1px; width: 100%; background: var(--line); }
 
+/* shadcn-style accessible focus ring for interactive elements */
+:where(a, button, input, textarea, select):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px color-mix(in srgb, var(--blue) 55%, transparent);
+  border-radius: 0.5rem;
+}
+
 .dotgrid {
   background-image: radial-gradient(rgba(27,95,217,0.10) 1px, transparent 1px);
   background-size: 22px 22px;
 }
 
 .marquee-track { display: inline-flex; white-space: nowrap; will-change: transform; }
+
+/* ============ WebGL wallpaper — fixed behind everything ============ */
+.wallpaper {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+}
+.wallpaper canvas { display: block; width: 100% !important; height: 100% !important; }
+
+/* Everything above the wallpaper */
+.above { position: relative; z-index: 1; }
+
+/* Fine film grain to add a physical, machined texture */
+.grain::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  opacity: 0.035; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Magnetic / premium button sheen */
+.sheen { position: relative; overflow: hidden; }
+.sheen::before {
+  content: ""; position: absolute; top: 0; left: -120%; width: 60%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.55), transparent);
+  transform: skewX(-18deg); transition: left 0.75s cubic-bezier(0.16,1,0.3,1);
+}
+.sheen:hover::before { left: 140%; }
+
+/* Hairline ticks used as engineering rulers */
+.ruler {
+  height: 10px; width: 100%;
+  background-image: repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 26px);
+}
+
+/* MeshTextHover canvas host */
+.mesh-host { position: relative; }
+.mesh-host canvas { display: block; }
+
+/* ============ Contact dock (scroll popup) ============ */
+.dock-panel {
+  box-shadow: 0 40px 90px -30px rgba(11,27,51,0.4), 0 2px 8px rgba(11,27,51,0.08);
+}
+
+/* ============ Preloader ============ */
+.pl-panel { position: absolute; top: 0; height: 100%; background: #ffffff; will-change: transform; }
+.pl-digit { font-variant-numeric: tabular-nums; }
+
+/* Reveal-on-scroll line clip for GSAP split lines */
+.clip-line { overflow: hidden; display: block; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }

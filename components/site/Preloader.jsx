@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { gsap } from "@/lib/gsap";
+
+const PANELS = 6;
 
 export default function Preloader({ onComplete }) {
   const root = useRef(null);
   const barRef = useRef(null);
-  const gearRef = useRef(null);
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -14,17 +16,22 @@ export default function Preloader({ onComplete }) {
     const counter = { v: 0 };
 
     const ctx = gsap.context(() => {
-      gsap.to(gearRef.current, { rotate: 360, duration: 3.5, ease: "none", repeat: -1 });
-      gsap.from(".pl-word", { yPercent: 120, opacity: 0, duration: 0.9, stagger: 0.1, ease: "power3.out" });
+      // intro
+      gsap.set(".pl-panel", { yPercent: 0 });
+      gsap.from(".pl-mark", { yPercent: 120, opacity: 0, duration: 1, stagger: 0.09, ease: "power3.out" });
+      gsap.from(".pl-scan", { scaleX: 0, duration: 1.1, ease: "power2.out" });
 
       const tl = gsap.timeline({
         onComplete: () => {
-          gsap.to(".pl-word", { yPercent: -120, opacity: 0, duration: 0.45, stagger: 0.05, ease: "power3.in" });
-          gsap.to(root.current, {
+          // content lifts away, then panels wipe up like machined shutters
+          gsap.to(".pl-mark", { yPercent: -120, opacity: 0, duration: 0.5, stagger: 0.05, ease: "power3.in" });
+          gsap.to(".pl-foot", { opacity: 0, duration: 0.35 });
+          gsap.to(".pl-panel", {
             yPercent: -100,
             duration: 0.9,
             ease: "power4.inOut",
-            delay: 0.2,
+            stagger: 0.06,
+            delay: 0.25,
             onStart: () => (document.documentElement.style.overflow = ""),
             onComplete: () => onComplete?.(),
           });
@@ -33,7 +40,7 @@ export default function Preloader({ onComplete }) {
 
       tl.to(counter, {
         v: 100,
-        duration: 2.2,
+        duration: 1.5,
         ease: "power2.inOut",
         onUpdate: () => {
           const val = Math.round(counter.v);
@@ -50,48 +57,57 @@ export default function Preloader({ onComplete }) {
   }, [onComplete]);
 
   return (
-    <div ref={root} className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white">
-      <div className="dotgrid pointer-events-none absolute inset-0 opacity-60" />
-      <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(55% 45% at 50% 45%, rgba(27,95,217,0.08), transparent 70%)" }} />
-
-      <div ref={gearRef} className="relative mb-9">
-        <Gear />
+    <div ref={root} className="fixed inset-0 z-[100] overflow-hidden">
+      {/* machined shutter panels */}
+      <div className="absolute inset-0 flex">
+        {Array.from({ length: PANELS }).map((_, i) => (
+          <div key={i} className="pl-panel relative h-full flex-1 border-r border-line/60 last:border-r-0" style={{ left: 0 }} />
+        ))}
       </div>
 
-      <div className="relative overflow-hidden text-center">
-        <div className="pl-word font-display text-[13vw] font-bold leading-[0.85] tracking-tight text-ink md:text-[6.5vw]">
-          GECO
+      {/* content layer */}
+      <div className="relative z-10 flex h-full flex-col items-center justify-center">
+        <div className="dotgrid pointer-events-none absolute inset-0 opacity-50" />
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{ background: "radial-gradient(55% 45% at 50% 45%, rgba(27,95,217,0.08), transparent 70%)" }}
+        />
+
+        <div className="relative mb-8 overflow-hidden">
+          <Image
+            src="/brand/60-years.webp"
+            alt="Celebrating 60+ years of innovation"
+            width={420}
+            height={170}
+            priority
+            className="pl-mark h-auto w-[min(60vw,260px)] object-contain"
+          />
         </div>
-      </div>
-      <div className="relative mt-2 overflow-hidden">
-        <p className="pl-word text-[0.7rem] uppercase tracking-[0.42em] text-muted">Engineering Excellence · Since 1958</p>
-      </div>
-
-      <div className="absolute bottom-14 left-1/2 w-[min(70vw,420px)] -translate-x-1/2">
-        <div className="mb-3 flex items-end justify-between">
-          <span className="text-[0.65rem] uppercase tracking-[0.28em] text-muted">Calibrating</span>
-          <span className="font-display text-2xl font-semibold text-blue tabular-nums">{count}</span>
+        <div className="relative overflow-hidden">
+          <p className="pl-mark tech-label text-muted">Precision Components · Since 1958</p>
         </div>
-        <div className="h-[3px] w-full overflow-hidden rounded-full bg-blue-soft">
-          <div ref={barRef} className="h-full origin-left rounded-full" style={{ transform: "scaleX(0)", background: "linear-gradient(90deg, var(--blue), var(--blue-deep))" }} />
+
+        {/* scanning ruler line — precision instrument cue */}
+        <div className="pl-scan relative mt-9 h-px w-[min(60vw,340px)] origin-center overflow-hidden bg-line">
+          <span className="absolute left-0 top-0 h-full w-1/3 bg-gradient-to-r from-transparent via-blue to-transparent" />
+        </div>
+
+        {/* footer counter + machined progress */}
+        <div className="pl-foot absolute bottom-14 left-1/2 w-[min(70vw,420px)] -translate-x-1/2">
+          <div className="mb-3 flex items-end justify-between">
+            <span className="tech-label text-muted">Calibrating</span>
+            <span className="pl-digit font-display text-3xl font-semibold text-blue">{String(count).padStart(3, "0")}</span>
+          </div>
+          <div className="ruler mb-2 opacity-60" />
+          <div className="h-[3px] w-full overflow-hidden rounded-full bg-blue-soft">
+            <div
+              ref={barRef}
+              className="h-full origin-left rounded-full"
+              style={{ transform: "scaleX(0)", background: "linear-gradient(90deg, var(--blue), var(--blue-deep))" }}
+            />
+          </div>
         </div>
       </div>
     </div>
-  );
-}
-
-function Gear() {
-  return (
-    <svg width="64" height="64" viewBox="0 0 100 100" fill="none">
-      <path
-        d="M50 6l5 11 12-3 2 12 12 4-6 11 8 9-10 7 2 12-12 1-4 12-10-7-10 7-4-12-12-1 2-12-10-7 8-9-6-11 12-4 2-12 12 3z"
-        stroke="var(--blue)"
-        strokeWidth="2"
-        strokeLinejoin="round"
-        opacity="0.4"
-      />
-      <circle cx="50" cy="50" r="16" stroke="var(--gold)" strokeWidth="2.5" />
-      <circle cx="50" cy="50" r="4" fill="var(--gold)" />
-    </svg>
   );
 }

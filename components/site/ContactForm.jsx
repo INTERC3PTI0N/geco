@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { PRODUCTS } from "@/lib/content";
 
-export default function ContactForm() {
+export default function ContactForm({ compact = false }) {
   const [status, setStatus] = useState("idle");
   const [msg, setMsg] = useState("");
 
@@ -29,8 +29,8 @@ export default function ContactForm() {
   };
 
   return (
-    <form onSubmit={onSubmit} className="card p-7 sm:p-9">
-      <div className="grid gap-5 sm:grid-cols-2">
+    <form onSubmit={onSubmit} className={compact ? "" : "card p-7 sm:p-9"}>
+      <div className={`grid gap-5 ${compact ? "" : "sm:grid-cols-2"}`}>
         <Field name="name" label="Full name" required />
         <Field name="company" label="Company" />
         <Field name="email" label="Email" type="email" required />

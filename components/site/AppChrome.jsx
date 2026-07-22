@@ -7,20 +7,14 @@ import SmoothScroll from "@/components/SmoothScroll";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Preloader from "./Preloader";
+import ContactDock from "./ContactDock";
 
 export default function AppChrome({ children }) {
   const pathname = usePathname();
-  const [showPre, setShowPre] = useState(false);
-  const [done, setDone] = useState(true);
-
-  // Preloader only on first visit of the session, and only on the home route.
-  useEffect(() => {
-    const seen = typeof window !== "undefined" && sessionStorage.getItem("geco_seen");
-    if (!seen && window.location.pathname === "/") {
-      setShowPre(true);
-      setDone(false);
-    }
-  }, []);
+  // Preloader runs on every full page load / refresh (AppChrome only mounts on
+  // hard loads, not on client-side navigation, so route changes stay instant).
+  const [showPre, setShowPre] = useState(true);
+  const [done, setDone] = useState(false);
 
   // Recalculate scroll triggers / scroll to top on route change
   useEffect(() => {
@@ -29,7 +23,6 @@ export default function AppChrome({ children }) {
   }, [pathname]);
 
   const finish = () => {
-    sessionStorage.setItem("geco_seen", "1");
     setDone(true);
     setShowPre(false);
   };
@@ -40,6 +33,7 @@ export default function AppChrome({ children }) {
       <Navbar />
       <main className={done ? "" : "pointer-events-none"}>{children}</main>
       <Footer />
+      <ContactDock />
     </SmoothScroll>
   );
 }

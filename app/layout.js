@@ -1,17 +1,26 @@
-import { Space_Grotesk, Inter } from "next/font/google";
+import { Bricolage_Grotesque, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import AppChrome from "@/components/site/AppChrome";
 
-const display = Space_Grotesk({
+// Display — Bricolage Grotesque: characterful, precise, modern-luxury headline face.
+const display = Bricolage_Grotesque({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-display",
 });
 
+// Body — Inter: clean, neutral, highly legible.
 const sans = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   variable: "--font-sans",
+});
+
+// Mono — IBM Plex Mono: refined technical micro-readouts and spec captions.
+const mono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-mono",
 });
 
 export const metadata = {
@@ -40,7 +49,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`}>
+    <html lang="en" className={`${display.variable} ${sans.variable}${" "}${mono.variable}`}>
       <body>
         <AppChrome>{children}</AppChrome>
       </body>
