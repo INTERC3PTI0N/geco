@@ -98,7 +98,7 @@ export default function Hero() {
             <div className="hero-title mt-6">
               <MeshTextHover
                 lines={HERO_LINES}
-                className="font-display text-[13.5vw] font-extrabold leading-[0.92] tracking-[-0.03em] sm:text-[9vw] lg:text-[5.6vw]"
+                className="font-display font-extrabold leading-[0.92] tracking-[-0.03em] text-[clamp(2.25rem,6vw,5rem)]"
               />
             </div>
 

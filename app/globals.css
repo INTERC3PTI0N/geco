@@ -213,7 +213,11 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 /* ============ Preloader ============ */
-.pl-panel { position: absolute; top: 0; height: 100%; background: #ffffff; will-change: transform; }
+/* Panels are flex items (width from flex-1) that tile the screen with a solid
+   white fill, then wipe upward to reveal the site. Do NOT set position:absolute
+   here — as an unlayered rule it would beat Tailwind's `relative`/`flex-1` and
+   collapse the panels to zero width, letting the page show through. */
+.pl-panel { height: 100%; background: #ffffff; will-change: transform; }
 .pl-digit { font-variant-numeric: tabular-nums; }
 
 /* Reveal-on-scroll line clip for GSAP split lines */

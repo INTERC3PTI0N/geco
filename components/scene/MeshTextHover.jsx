@@ -97,25 +97,31 @@ export default function MeshTextHover({ lines = [], as = "h1", className = "" })
     const mat = new THREE.ShaderMaterial({ vertexShader: VERT, fragmentShader: FRAG, uniforms, transparent: true });
     scene.add(new THREE.Mesh(geo, mat));
 
-    // draw the DOM text onto the texture canvas at the plane's pixel size
+    // Draw the DOM text onto the texture canvas at the heading's exact box. With
+    // the heading forced nowrap + inline-block and the font-size capped to fit
+    // its column, that box always equals the single-line text — so the buffer
+    // aspect matches the host (no distortion) and nothing is clipped. Letter-
+    // spacing is mirrored so the drawn width matches the DOM precisely.
     const paint = () => {
-      const rect = dom.getBoundingClientRect();
-      const w = Math.max(2, Math.round(rect.width));
-      const h = Math.max(2, Math.round(rect.height));
-      const dpr = Math.min(window.devicePixelRatio, 2);
-      const cvs = tex.image;
-      cvs.width = w * dpr;
-      cvs.height = h * dpr;
-      const ctx = cvs.getContext("2d");
-      ctx.scale(dpr, dpr);
-      ctx.clearRect(0, 0, w, h);
-
       const cs = getComputedStyle(dom);
+      const rect = dom.getBoundingClientRect();
+      const w = Math.max(2, Math.ceil(rect.width));
+      const h = Math.max(2, Math.ceil(rect.height));
       const fontPx = parseFloat(cs.fontSize);
       const lineH = parseFloat(cs.lineHeight) || fontPx * 1.05;
-      ctx.font = `${cs.fontWeight} ${fontPx}px ${cs.fontFamily}`;
+      const spacing = cs.letterSpacing && cs.letterSpacing !== "normal" ? cs.letterSpacing : "0px";
+
+      const cvs = tex.image;
+      const ctx = cvs.getContext("2d");
+      const dpr = Math.min(window.devicePixelRatio, 2);
+      cvs.width = Math.round(w * dpr);
+      cvs.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+      ctx.font = `${cs.fontStyle} ${cs.fontWeight} ${fontPx}px ${cs.fontFamily}`;
       ctx.textBaseline = "middle";
       ctx.textAlign = "left";
+      if ("letterSpacing" in ctx) ctx.letterSpacing = spacing;
 
       lines.forEach((ln, i) => {
         const y = lineH * (i + 0.5);
@@ -176,9 +182,10 @@ export default function MeshTextHover({ lines = [], as = "h1", className = "" })
   }, [lines]);
 
   return (
-    <div ref={wrapRef} className="mesh-host relative">
-      {/* hidden but present: reserves layout + carries accessible/SEO text */}
-      <Tag ref={domRef} className={className} style={{ opacity: 0, margin: 0 }}>
+    <div ref={wrapRef} className="mesh-host relative inline-block max-w-full align-top">
+      {/* hidden but present: reserves layout + carries accessible/SEO text.
+          nowrap keeps each line single-line so its box matches the drawn text. */}
+      <Tag ref={domRef} className={className} style={{ opacity: 0, margin: 0, whiteSpace: "nowrap" }}>
         {lines.map((l, i) => (
           <span key={i} className="clip-line">{l.text}</span>
         ))}
